@@ -1,0 +1,23 @@
+apiVersion: 1
+
+datasources:
+  - name: Redis
+    type: redis-datasource
+    access: proxy
+    orgId: 1
+    url: redis://redis-cache:6379
+    integrations:
+      redis_exporter:
+        enabled: true
+        redis_addr: "redis:6379"
+    database: redis-datasource
+    allowUiUpdates: true
+    isDefault: true
+    jsonData:
+      sslmode: 'disable' 
+      timescaledb: false
+    user:
+    secureJsonData:
+      password: ""
+    version: 1
+    editable: true

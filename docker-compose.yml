@@ -1,0 +1,134 @@
+version: '3'
+services:
+  ## SERVICE: NIFI ----------------------------------------------
+  nifi:
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - '8181:8181'  
+    environment:
+      NIFI_WEB_HTTP_PORT: '8181'
+    volumes:
+      - .nifi:/opt/nifi/nifi-current/ls-target
+      - type: bind
+        source: .nifi/security/cacerts
+        target: /opt/nifi/nifi-current/cacerts
+      - nifi-hdfs:/opt/nifi/nifi-current/ls-target/hdfs-conf # loads configuration files from hdfs to nifi, even if are not copied in the local fs
+
+
+  # SERVICE: HDFS ---------------------------------------------
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    ports:
+      - '9870:9870' # http://localhost:9870 web ui HDFS.
+      - '9000:9000' # HDFS master
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name # volume di hdfs namenode
+      - nifi-hdfs:/etc/hadoop # shared with nifi
+
+    environment:
+      - CLUSTER_NAME=test
+      - HDFS_CONF_dfs_replication=1
+    env_file:
+      - ./hadoop.env
+
+  datanode: # if the datanode loops between start and stop, all HDFS containers must be deleted
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+
+    #    environment:
+    #      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+
+  ## SERVICE: APACHE SPARK -------------------------------------
+  spark:
+    image: docker.io/bitnami/spark:3
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+
+    ports:
+      - '8080:8080'
+      - '7077:7077' # per connettersi a spark master
+      - '4040:4040'
+    volumes:
+      - ./target:/opt/bitnami/spark/app/
+      - .nifi/Templates:/home/Templates
+      - ./Results:/home/results
+      #- ./spark-events:/tmp/spark-events
+
+  spark-worker:
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077 # the url of the master the worker will connect to
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      #ports:
+      #- '8081:8081' # http://localhost:8081 web ui spark
+    volumes:
+      - ./target:/opt/bitnami/spark/app/
+      - ./Results:/home/results
+      #- ./spark-events:/tmp/spark-events
+      #- /host_mnt/c/Users/vlrbr/Downloads/hdd-smart-data_medium-utv/raw_data_medium-utv_sorted.csv:/data/raw_data_medium-utv_sorted.csv # Mount del volume contenente il file CSV
+
+    depends_on:
+      - spark
+
+  # SERVICE: REDIS ---------------------------------------------
+  redis:
+    image: redislabs/redisearch
+    container_name: redis-cache
+    ports:
+      - '6379:6379'
+
+  #SERVICE: GRAFANA -------------------------------------------
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_USERS_DEFAULT_THEME=light
+      - GF_DEFAULT_APP_MODE=development
+      - GF_INSTALL_PLUGINS=redis-datasource
+      - DS_REDIS=Redis
+      - GF_SERVER_ENABLE_GZIP=true
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+    volumes:
+      #- ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/dashboards
+      # Uncomment to preserve Grafana configuration
+      #- ./data:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
+
+
+volumes:
+  nifi-hdfs: # volume shared by nifi and hdfs
+  nifi-spark: #volume shared by nifi and spark
+  hadoop_datanode:
+    driver: local # where to save data. Default is local
+    external: false # volume defined outside this docker-compose? Default is false.
+  hadoop_namenode:
+    driver: local
+    external: false
+  grafana-data:
+    external: false

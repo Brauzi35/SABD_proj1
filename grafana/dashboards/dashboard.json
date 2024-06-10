@@ -1,0 +1,495 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 4,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 77,
+      "panels": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PA7F6415749A3297A"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "left",
+                "cellOptions": {
+                  "type": "color-text"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 33,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "pluginVersion": "10.4.3",
+          "repeat": "query1",
+          "repeatDirection": "v",
+          "targets": [
+            {
+              "command": "hgetall",
+              "datasource": {
+                "type": "redis-datasource",
+                "uid": "PA7F6415749A3297A"
+              },
+              "keyName": "${query1}",
+              "query": "",
+              "refId": "A",
+              "streaming": false,
+              "streamingDataType": "DataFrame",
+              "type": "command"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {
+                  "date": 0,
+                  "failuresCount": 2,
+                  "vaultId": 1
+                },
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Query1 - Total Failures Per Day Per Vault",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 23,
+      "panels": [],
+      "title": "Query2 - Top 10 Vaults by Number of Failures",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "PA7F6415749A3297A"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic-by-name"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totalFailures"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 429
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.4.3",
+      "repeat": "query2",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "command": "hgetall",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PA7F6415749A3297A"
+          },
+          "keyName": "${query2}",
+          "query": "",
+          "refId": "A",
+          "type": "command"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "totalFailures": 1,
+              "uniqueModels": 2,
+              "vaultId": 0
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 16,
+        "x": 0,
+        "y": 32
+      },
+      "id": 13,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "command": "hgetall",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PA7F6415749A3297A"
+          },
+          "keyName": "query2",
+          "query": "",
+          "refId": "A",
+          "type": "command"
+        }
+      ],
+      "title": "Top 10 Hard Disk Models by Number of Failures",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "id": 2,
+      "panels": [],
+      "title": "Query3",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "redis-datasource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic-by-name"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "command": "hgetall",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PA7F6415749A3297A"
+          },
+          "keyName": "failureStats",
+          "query": "",
+          "refId": "A",
+          "type": "command"
+        },
+        {
+          "command": "hgetall",
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "PA7F6415749A3297A"
+          },
+          "hide": false,
+          "keyName": "nofailureStats",
+          "query": "",
+          "refId": "B",
+          "type": "command"
+        }
+      ],
+      "title": "Distribution of Operating Hours for Hard Disks with and without Failures",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "# failure": 0,
+              "25th_percentile": 2,
+              "50th_percentile": 3,
+              "75th_percentile": 4,
+              "count": 6,
+              "max": 5,
+              "min": 1
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "redis-datasource",
+          "uid": "PA7F6415749A3297A"
+        },
+        "definition": "KEYS query1:*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "query1",
+        "options": [],
+        "query": "KEYS query1:*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "redis-datasource",
+          "uid": "PA7F6415749A3297A"
+        },
+        "definition": "KEYS query2.2:*",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "query2",
+        "options": [],
+        "query": "KEYS query2.2:*",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "dash",
+  "uid": "edndenaq386wwe",
+  "version": 8,
+  "weekStart": ""
+}
