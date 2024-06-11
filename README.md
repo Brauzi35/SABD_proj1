@@ -1,4 +1,4 @@
-# Hard Disk Analysis with Apache Spark
+# SABD proj1
 
 This project aims to analyze hard disk data to compute statistics various statistics. For further deatils please refer to the provided docs.
 
