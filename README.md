@@ -1,11 +1,11 @@
 # SABD proj1
 
-This project aims to analyze hard disk data to compute statistics various statistics. For further deatils please refer to the provided docs.
+This project aims to analyze hard disk data to compute statistics various statistics. For further details please refer to the provided docs.
 
 __Authors__
 
 * :man_technologist: Brauzi Valerio (matricola 0333768)
-* :man_technologist: Calcaura Marina (matricola 0334044)
+* :woman_technologist: Calcaura Marina (matricola 0334044)
 
 ## Prerequisites
 
